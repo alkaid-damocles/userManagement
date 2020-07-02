@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.register.DAO.UserDAO">
+    <insert id="save" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        insert into t_user values(#{id},#{username},#{password},#{email})
+    </insert>
+    <select id="findByUsername" parameterType="String" resultType="User">
+        select * from t_user where username = #{username}
+    </select>
+    <select id="findById" parameterType="String" resultType="User">
+        select * from t_user where id = #{id}
+    </select>
+    <select id="findByPage" resultType="User">
+        select id,username,password,email
+        from t_user
+        limit #{start},#{rows}
+    </select>
+
+    <select id="findTotals" resultType="Integer">
+        select count(id) from t_user
+    </select>
+    <update id="update" parameterType="User">
+        update t_user set password = #{password}, email = #{email}
+        where id= #{id}
+    </update>
+    <delete id="delete" parameterType="String">
+        delete from t_user where id = #{id}
+    </delete>
+</mapper>

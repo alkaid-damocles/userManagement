@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>添加用户</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        form {
+            width: 270px;
+        }
+
+        input {
+            width: 70%;
+            background: #eee;
+        }
+
+        input:focus {
+            background: #fff;
+        }
+
+        form {
+            padding: 0 12px 12px;
+        }
+
+        label {
+            display: block;
+            padding-bottom: 12px;
+        }
+
+        .label-text {
+            width: 30%;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id="wrap">
+        <div id="header">
+            <div style="float: right;padding-top: 24px">2020/02/27</div>
+            <h1>用户管理系统</h1>
+        </div>
+        <div id="header-bar"></div>
+        <div id="content" style="height: 360px">
+            <img src="../img/timg.jpg" style="float: right;height: 320px">
+            <h2>添加用户</h2>
+            <form action="usermanage.html" method="post">
+                <label>
+                    <div class="label-text">名称:</div>
+                    <input v-model="user.username" type="text" name="username">
+                </label>
+                <label>
+                    <div class="label-text">密码:</div>
+                    <input v-model="user.password" type="text" name="password">
+                </label>
+                <label>
+                    <div class="label-text">邮箱:</div>
+                    <input v-model="user.email" type="text" name="email">
+                </label>
+                <button type="button" @click="addUser">添加</button>&emsp;
+                <button href="usermanage.html">返回</button>
+            </form>
+        </div>
+        <div id="footer">
+            ABC@126.com
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript" src="../js/vue.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script>
+    const app = new Vue({
+        el: "#app",
+        data: {
+            user: {},
+        },
+        methods: {
+            addUser() {
+                console.log(this.user);
+                if (!this.user.username & !this.user.password & !this.user.email) {
+                    alert("请填写所有信息");
+                    return;
+                }
+                axios.post("http://localhost:8080/user/addUser", this.user).then((res) => {
+
+                    if (res.data.state) {
+                        alert("添加成功")
+                        location.href = "usermanage.html";
+                    } else {
+                        alert(res.data.msg)
+                    }
+                })
+            }
+        }
+    })
+</script>

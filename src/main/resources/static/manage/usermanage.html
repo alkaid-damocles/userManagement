@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        table {
+            width: 100%;
+            margin-bottom: 15px;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        th, td {
+            border: 1px solid #CBD6DE;
+            padding-left: 10px;
+            line-height: 28px;
+        }
+
+        th {
+            text-align: left;
+            background: linear-gradient(#edf2f5, #dce9f2, #edf2f5);
+            color: #467aa7;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+
+        #pages {
+            text-align: center;
+            padding-top: 8px;
+        }
+
+        .page {
+            min-width: 50px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id="wrap">
+        <div id="header">
+            <div style="float: right;padding-top: 24px">
+                2020/05/27&emsp;
+                <a href="../login.html" style="color:#fff;float: right">安全退出</a>
+            </div>
+            <h1>用户管理系统</h1>
+        </div>
+        <div id="header-bar"></div>
+        <div id="content" style="height: 360px">
+            <h2>用户列表</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th width="20%">ID</th>
+                    <th width="20%">用户名称</th>
+                    <th width="20%">用户密码</th>
+                    <th width="20%">邮箱</th>
+                    <th width="20%">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="user in users" :key="user">
+                    <td v-text="user.id"></td>
+                    <td v-text="user.username"></td>
+                    <td v-text="user.password"></td>
+                    <td v-text="user.email"></td>
+                    <td>
+                        <button @click="deleteUser(user.id)">删除</button>
+                        <button @click="updateUser(user)">修改</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <a href="adduser.html">
+                <button type="button">添加用户</button>
+            </a>
+            <div id="pages">
+                <a href="#" class="page">&lt;上一页</a>
+                <a href="#" class="page">1</a>
+                <a href="#" class="page">2</a>
+                <a href="#" class="page">3</a>
+                <a href="#" class="page">4</a>
+                <a href="#" class="page">5</a>
+                <a href="#" class="page">下一页&gt;</a>
+            </div>
+        </div>
+        <div id="footer">
+            ABC@126.com
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript" src="../js/vue.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script>
+    const app = new Vue({
+        el: "#app",
+        data: {
+            users: {},
+            href: "",
+        },
+        methods: {
+            findAll() {
+                axios.get("http://localhost:8080/user/findByPage").then((res) => {
+                    console.log(res.data);
+                    _this = this;
+                    _this.users = res.data.users;
+                    _this.page = res.data.page;
+                    _this.totalPage = res.data.totalPage;
+                    _this.totals = res.data.totals;
+                })
+            },
+            deleteUser(id) {
+                axios.get("http://localhost:8080/user/delete?id=" + id).then((res) => {
+                    if (res.data.state) {
+                        alert(res.data.msg + "点击确定");
+                        location.reload(true);
+                    } else {
+                        alert(res.data.msg);
+                    }
+                })
+            },
+            updateUser(user) {
+                this.href = "updateuser.html?id=" + user.id;
+                location.href = this.href;
+            },
+        },
+        created() {
+            this.findAll();
+        }
+    })
+</script>
